@@ -1,0 +1,14 @@
+Author: Spencer Shepard
+Date: June 21, 2015
+
+Implementation of the Getting Dressed problem following all state rules.
+
+Can be packaged and tested via Maven:
+
+mvn compile package
+
+To run from the command line execute the jar:
+
+Example:
+java -jar gettingdressed-0.1.0.jar HOT 8, 6, 4, 2, 1, 7
+
