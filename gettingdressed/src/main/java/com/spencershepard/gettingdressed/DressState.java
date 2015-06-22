@@ -1,5 +1,9 @@
 package com.spencershepard.gettingdressed;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * Maintain the current state of being dressed.
  * 
@@ -8,131 +12,83 @@ package com.spencershepard.gettingdressed;
  */
 public class DressState {
     
-    private boolean footwearOn = false;
+    /**
+     * Command that have already been set
+     */
+    private final Set<Integer> commandsAlreadySet = new LinkedHashSet<>(); 
     
-    private boolean headwearOn = false;
+    /**
+     * Remaining commands required for hot.
+     */
+    private final Set<Integer> stillRequiredForHot = new HashSet<>();
     
-    private boolean socksOn = false;
+    /**
+     * Remaining commands required for cold.
+     */
+    private final Set<Integer> stillRequiredForCold = new HashSet<>();
     
-    private boolean shirtOn = false;
+    /**
+     * Set the command for the dress state. Throw an exception if already set.
+     * 
+     * @param command
+     *            Command to set
+     * @throws DressStateException
+     *             If command is already set.
+     */
+    public void setCommand(Integer command) throws DressStateException {
+        if (!commandsAlreadySet.add(command)) {
+            throw new DressStateException();
+        }
+        stillRequiredForHot.remove(command);
+        stillRequiredForCold.remove(command);
+    }
     
-    private boolean jacketOn = false;
+    /**
+     * Has the command been set?
+     * 
+     * @param command
+     *            command to test
+     * @return true if already set
+     */
+    public boolean hasCommandBeenSet(Integer command) {
+        return commandsAlreadySet.contains(command);
+    }
     
-    private boolean pantsOn = false;
+    /**
+     * Set that the command is required for hot.
+     * 
+     * @param command
+     *            Command required
+     */
+    public void setRequiredForHot(Integer command) {
+        stillRequiredForHot.add(command);
+    }
+
+    /**
+     * Set that the command is required for cold.
+     * 
+     * @param command
+     *            Command required
+     */
+    public void setRequiredForCold(Integer command) {
+        stillRequiredForCold.add(command);
+    }
     
-    private boolean leftHouse = false;
+    /**
+     * Have all hot commands required been called?
+     * 
+     * @return true if yes
+     */
+    public boolean areAllHotCommandsCalled() {
+       return stillRequiredForHot.isEmpty(); 
+    }
     
-    private boolean pjsAreOff = false;
-
     /**
-     * @return the footwearOn
+     * Have all cold commands required been called?
+     * 
+     * @return true if yes
      */
-    public boolean isFootwearOn() {
-        return footwearOn;
-    }
-
-    /**
-     * @param footwearOn the footwearOn to set
-     */
-    public void setFootwearOn(boolean footwearOn) {
-        this.footwearOn = footwearOn;
-    }
-
-    /**
-     * @return the headwearOn
-     */
-    public boolean isHeadwearOn() {
-        return headwearOn;
-    }
-
-    /**
-     * @param headwearOn the headwearOn to set
-     */
-    public void setHeadwearOn(boolean headwearOn) {
-        this.headwearOn = headwearOn;
-    }
-
-    /**
-     * @return the socksOn
-     */
-    public boolean isSocksOn() {
-        return socksOn;
-    }
-
-    /**
-     * @param socksOn the socksOn to set
-     */
-    public void setSocksOn(boolean socksOn) {
-        this.socksOn = socksOn;
-    }
-
-    /**
-     * @return the shirtOn
-     */
-    public boolean isShirtOn() {
-        return shirtOn;
-    }
-
-    /**
-     * @param shirtOn the shirtOn to set
-     */
-    public void setShirtOn(boolean shirtOn) {
-        this.shirtOn = shirtOn;
-    }
-
-    /**
-     * @return the jacketOn
-     */
-    public boolean isJacketOn() {
-        return jacketOn;
-    }
-
-    /**
-     * @param jacketOn the jacketOn to set
-     */
-    public void setJacketOn(boolean jacketOn) {
-        this.jacketOn = jacketOn;
-    }
-
-    /**
-     * @return the pantsOn
-     */
-    public boolean isPantsOn() {
-        return pantsOn;
-    }
-
-    /**
-     * @param pantsOn the pantsOn to set
-     */
-    public void setPantsOn(boolean pantsOn) {
-        this.pantsOn = pantsOn;
-    }
-
-    /**
-     * @return the leftHouse
-     */
-    public boolean isLeftHouse() {
-        return leftHouse;
-    }
-
-    /**
-     * @param leftHouse the leftHouse to set
-     */
-    public void setLeftHouse(boolean leftHouse) {
-        this.leftHouse = leftHouse;
-    }
-
-    /**
-     * @return the pjsAreOff
-     */
-    public boolean isPjsAreOff() {
-        return pjsAreOff;
-    }
-
-    /**
-     * @param pjsAreOff the pjsAreOff to set
-     */
-    public void setPjsAreOff(boolean pjsAreOff) {
-        this.pjsAreOff = pjsAreOff;
+    public boolean areAllColdCommandsCalled() {
+        return stillRequiredForCold.isEmpty();
     }
 }

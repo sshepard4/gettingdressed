@@ -13,13 +13,18 @@ import com.spencershepard.gettingdressed.DressStateException;
 public class LeaveHouseCommand extends DressCommand {
 
     /**
+     * Index for this command
+     */
+    public static final Integer INDEX = 7;
+    
+    /**
      * Get index command.
      * 
      * @see com.spencershepard.gettingdressed.command.DressCommand#getCommandIndex()
      */
     @Override
     public int getCommandIndex() {
-        return 7;
+        return INDEX;
     }
 
     /**
@@ -40,9 +45,8 @@ public class LeaveHouseCommand extends DressCommand {
      */
     @Override
     protected String executeHot(DressState dressState) throws DressStateException {
-        if (dressState.isPjsAreOff() && !dressState.isLeftHouse() && dressState.isFootwearOn()
-                && dressState.isHeadwearOn() && dressState.isShirtOn() && dressState.isPantsOn()) {
-            dressState.setLeftHouse(true);
+        if (dressState.areAllHotCommandsCalled()) {
+            dressState.setCommand(getCommandIndex());
             return "leaving house";
         }
         throw new DressStateException();
@@ -56,12 +60,26 @@ public class LeaveHouseCommand extends DressCommand {
      */
     @Override
     protected String executeCold(DressState dressState) throws DressStateException {
-        if (dressState.isPjsAreOff() && !dressState.isLeftHouse() && dressState.isFootwearOn()
-                && dressState.isHeadwearOn() && dressState.isSocksOn() && dressState.isShirtOn()
-                && dressState.isJacketOn() && dressState.isPantsOn()) {
-            dressState.setLeftHouse(true);
+        if (dressState.areAllColdCommandsCalled()) {
+            dressState.setCommand(getCommandIndex());
             return "leaving house";
         }
         throw new DressStateException();
+    }
+
+    /**
+     * Is required when hot.
+     */
+    @Override
+    public boolean isRequiredWhenHot() {
+        return false;
+    }
+
+    /**
+     * Is required when cold
+     */
+    @Override
+    public boolean isRequiredWhenCold() {
+        return false;
     }
 }

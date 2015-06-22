@@ -16,13 +16,18 @@ import com.spencershepard.gettingdressed.DressStateException;
 public class FootwearCommand extends DressCommand {
 
     /**
+     * Index for this command
+     */
+    public static final Integer INDEX = 1;
+    
+    /**
      * Get index command.
      * 
      * @see com.spencershepard.gettingdressed.command.DressCommand#getCommandIndex()
      */
     @Override
     public int getCommandIndex() {
-        return 1;
+        return INDEX;
     }
 
     /**
@@ -43,9 +48,10 @@ public class FootwearCommand extends DressCommand {
      */
     @Override
     protected String executeHot(DressState dressState) throws DressStateException {
-        if (dressState.isPjsAreOff() && !dressState.isLeftHouse() && dressState.isPantsOn()
-                && !dressState.isFootwearOn()) {
-            dressState.setFootwearOn(true);
+        if (dressState.hasCommandBeenSet(TakeOffPajamasCommand.INDEX)
+                && !dressState.hasCommandBeenSet(LeaveHouseCommand.INDEX)
+                && dressState.hasCommandBeenSet(PantsCommand.INDEX)) {
+            dressState.setCommand(getCommandIndex());
             return "sandals";
         }
         throw new DressStateException();
@@ -59,11 +65,28 @@ public class FootwearCommand extends DressCommand {
      */
     @Override
     protected String executeCold(DressState dressState) throws DressStateException {
-        if (dressState.isPjsAreOff() && !dressState.isLeftHouse() && dressState.isPantsOn() && dressState.isSocksOn()
-                && !dressState.isFootwearOn()) {
-            dressState.setFootwearOn(true);
+        if (dressState.hasCommandBeenSet(TakeOffPajamasCommand.INDEX)
+                && !dressState.hasCommandBeenSet(LeaveHouseCommand.INDEX)
+                && dressState.hasCommandBeenSet(PantsCommand.INDEX) && dressState.hasCommandBeenSet(SocksCommand.INDEX)) {
+            dressState.setCommand(getCommandIndex());
             return "boots";
         }
         throw new DressStateException();
+    }
+
+    /**
+     * Is required when hot.
+     */
+    @Override
+    public boolean isRequiredWhenHot() {
+        return true;
+    }
+
+    /**
+     * Is required when cold.
+     */
+    @Override
+    public boolean isRequiredWhenCold() {
+        return true;
     }
 }

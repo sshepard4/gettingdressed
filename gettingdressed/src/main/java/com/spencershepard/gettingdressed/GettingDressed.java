@@ -40,8 +40,8 @@ public class GettingDressed {
                 throw new DressStateException();
             }
             final Temperature temp = Temperature.valueOf(args[0]);
-            final Map<Integer, DressCommand> map = initMap();
             final DressState dressState = new DressState();
+            final Map<Integer, DressCommand> map = initMap(dressState);
             for (int i = 1; i < args.length; i++) {
                 DressCommand dressCommand = map.get(getCommandIndex(args[i]));
                 if (dressCommand == null) {
@@ -52,8 +52,8 @@ public class GettingDressed {
                     buf.append(", ");                    
                 }
             }
-            // Verify the user has left the house 
-            if (!dressState.isLeftHouse()) {
+            // Verify the user has left the house
+            if (!dressState.hasCommandBeenSet(7)) {
                 buf.append(", ");
                 throw new DressStateException();
             }
@@ -82,26 +82,25 @@ public class GettingDressed {
     /**
      * Get the initial map of dress commands.
      * 
-     * @return map of dress commands 
+     * @param dressState
+     *            Dress state
+     * @return map of dress commands
      */
-    private static Map<Integer, DressCommand> initMap() {
+    private static Map<Integer, DressCommand> initMap(final DressState dressState) {
+        DressCommand[] dressCommands = new DressCommand[] { new FootwearCommand(), new HeadwearCommand(),
+                new SocksCommand(), new ShirtCommand(), new JacketCommand(), new PantsCommand(),
+                new LeaveHouseCommand(), new TakeOffPajamasCommand() };
         Map<Integer, DressCommand> map = new HashMap<>();
-        DressCommand footwearCommand = new FootwearCommand();
-        map.put(footwearCommand.getCommandIndex(), footwearCommand);
-        DressCommand headwearCommand = new HeadwearCommand();
-        map.put(headwearCommand.getCommandIndex(), headwearCommand);
-        DressCommand socksCommand = new SocksCommand();
-        map.put(socksCommand.getCommandIndex(), socksCommand);
-        DressCommand shirtCommand = new ShirtCommand();
-        map.put(shirtCommand.getCommandIndex(), shirtCommand);
-        DressCommand jacketCommand = new JacketCommand();
-        map.put(jacketCommand.getCommandIndex(), jacketCommand);
-        DressCommand pantsCommand = new PantsCommand();
-        map.put(pantsCommand.getCommandIndex(), pantsCommand);
-        DressCommand leaveHouseCommand = new LeaveHouseCommand();
-        map.put(leaveHouseCommand.getCommandIndex(), leaveHouseCommand);
-        DressCommand takeOffPajamasCommand = new TakeOffPajamasCommand();
-        map.put(takeOffPajamasCommand.getCommandIndex(), takeOffPajamasCommand);
+        
+        for (DressCommand dressCommand : dressCommands) {
+            map.put(dressCommand.getCommandIndex(), dressCommand);
+            if (dressCommand.isRequiredWhenHot()) {
+                dressState.setRequiredForHot(dressCommand.getCommandIndex());
+            }
+            if (dressCommand.isRequiredWhenCold()) {
+                dressState.setRequiredForCold(dressCommand.getCommandIndex());
+            }
+        }
         
         return map;
     }

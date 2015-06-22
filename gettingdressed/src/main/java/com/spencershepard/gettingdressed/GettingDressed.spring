@@ -98,7 +98,7 @@ public class GettingDressed {
                 }
             }
             // Verify the user has left the house 
-            if (!dressState.isLeftHouse()) {
+            if (!dressState.hasCommandBeenSet(LeaveHouseCommand.INDEX)) {
                 buf.append(", ");
                 throw new DressStateException();
             }

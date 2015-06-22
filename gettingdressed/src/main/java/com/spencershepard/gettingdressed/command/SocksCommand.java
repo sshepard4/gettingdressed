@@ -13,13 +13,18 @@ import com.spencershepard.gettingdressed.DressStateException;
 public class SocksCommand extends DressCommand {
 
     /**
+     * Index for this command
+     */
+    public static final Integer INDEX = 3;
+    
+    /**
      * Get index command.
      * 
      * @see com.spencershepard.gettingdressed.command.DressCommand#getCommandIndex()
      */
     @Override
     public int getCommandIndex() {
-        return 3;
+        return INDEX;
     }
 
     /**
@@ -50,11 +55,27 @@ public class SocksCommand extends DressCommand {
      */
     @Override
     protected String executeCold(DressState dressState) throws DressStateException {
-        if (dressState.isPjsAreOff() && !dressState.isLeftHouse() && !dressState.isSocksOn()) {
-            dressState.setSocksOn(true);
+        if (dressState.hasCommandBeenSet(TakeOffPajamasCommand.INDEX) && !dressState.hasCommandBeenSet(LeaveHouseCommand.INDEX)) {
+            dressState.setCommand(getCommandIndex());
             return "socks";
         }
         throw new DressStateException();
+    }
+
+    /**
+     * Is not required when hot.
+     */
+    @Override
+    public boolean isRequiredWhenHot() {
+        return false;
+    }
+
+    /**
+     * Is required when cold.
+     */
+    @Override
+    public boolean isRequiredWhenCold() {
+        return true;
     }
 
 }

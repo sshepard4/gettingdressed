@@ -63,4 +63,18 @@ public abstract class DressCommand {
      *             Invalid dress state
      */
     protected abstract String executeCold(DressState dressState) throws DressStateException;
+    
+    /**
+     * Is this command required when hot?
+     * 
+     * @return true if required
+     */
+    public abstract boolean isRequiredWhenHot();
+    
+    /**
+     * Is this command required when cold?
+     * 
+     * @return true if required
+     */
+    public abstract boolean isRequiredWhenCold();
 }

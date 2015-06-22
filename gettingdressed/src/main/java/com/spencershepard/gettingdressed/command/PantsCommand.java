@@ -13,13 +13,18 @@ import com.spencershepard.gettingdressed.DressStateException;
 public class PantsCommand extends DressCommand {
 
     /**
+     * Index for this command
+     */
+    public static final Integer INDEX = 6;
+    
+    /**
      * Get index command.
      * 
      * @see com.spencershepard.gettingdressed.command.DressCommand#getCommandIndex()
      */
     @Override
     public int getCommandIndex() {
-        return 6;
+        return INDEX;
     }
 
     /**
@@ -40,25 +45,45 @@ public class PantsCommand extends DressCommand {
      */
     @Override
     protected String executeHot(DressState dressState) throws DressStateException {
-        if (dressState.isPjsAreOff() && !dressState.isLeftHouse() && !dressState.isFootwearOn() && !dressState.isPantsOn()) {
-            dressState.setPantsOn(true);
+        if (dressState.hasCommandBeenSet(TakeOffPajamasCommand.INDEX)
+                && !dressState.hasCommandBeenSet(LeaveHouseCommand.INDEX)
+                && !dressState.hasCommandBeenSet(FootwearCommand.INDEX)) {
+            dressState.setCommand(getCommandIndex());
             return "shorts";
         }
         throw new DressStateException();
     }
 
     /**
-     * If PJs are off, the person has yet to leave the house, footwear is not on, and pants have not been put on
-     * yet, return value, else exception.
+     * If PJs are off, the person has yet to leave the house, footwear is not on, and pants have not been put on yet,
+     * return value, else exception.
      * 
      * @see com.spencershepard.gettingdressed.command.DressCommand#executeCold(com.spencershepard.gettingdressed.DressState)
      */
     @Override
     protected String executeCold(DressState dressState) throws DressStateException {
-        if (dressState.isPjsAreOff() && !dressState.isLeftHouse() && !dressState.isFootwearOn() && !dressState.isPantsOn()) {
-            dressState.setPantsOn(true);
+        if (dressState.hasCommandBeenSet(TakeOffPajamasCommand.INDEX)
+                && !dressState.hasCommandBeenSet(LeaveHouseCommand.INDEX)
+                && !dressState.hasCommandBeenSet(FootwearCommand.INDEX)) {
+            dressState.setCommand(getCommandIndex());
             return "pants";
         }
         throw new DressStateException();
+    }
+
+    /**
+     * Is required when hot.
+     */
+    @Override
+    public boolean isRequiredWhenHot() {
+        return true;
+    }
+
+    /**
+     * Is required when cold.
+     */
+    @Override
+    public boolean isRequiredWhenCold() {
+        return true;
     }
 }
